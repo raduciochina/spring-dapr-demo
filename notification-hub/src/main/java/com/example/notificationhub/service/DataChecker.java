@@ -4,6 +4,7 @@ import com.example.notificationhub.model.Content;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,14 @@ import java.util.List;
 
 @Component
 public class DataChecker {
-
     @Autowired
     private EmailSender emailSender;
     @Autowired
     private ObjectMapper objectMapper;
+    @Value("${dapr.port}")
+    private String daprPort;
+    @Value("${content.calendar.appid}")
+    private String appId;
     private final String url = "http://localhost:8080/api/content";
 
     public DataChecker() {
