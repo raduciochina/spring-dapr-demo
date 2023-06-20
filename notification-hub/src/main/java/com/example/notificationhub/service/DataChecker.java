@@ -28,7 +28,8 @@ public class DataChecker {
     private String daprPort;
     @Value("${content.calendar.appid}")
     private String appId;
-    private final String url = "http://localhost:8080/api/content";
+//    private final String url = "http://localhost:8080/api/content";
+    private String url = "http://localhost:";
 
     public DataChecker() {
     }
@@ -36,8 +37,10 @@ public class DataChecker {
     public void checkData() throws JsonProcessingException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create(url + daprPort + "/api/content"))
                 .GET()
+                .header("Content-Type", "application/json")
+                .header("dapr-app-id", appId)
                 .build();
 
         String responseBody = null;
@@ -68,8 +71,9 @@ public class DataChecker {
                     content.setIsNotified(true);
                     String requestBody = objectMapper.writeValueAsString(content);
                     HttpRequest putHttpRequest = HttpRequest.newBuilder()
-                            .uri(URI.create(url + "/" + content.getId()))
+                            .uri(URI.create(url + daprPort + "/api/content" + "/" + content.getId()))
                             .header("Content-Type", "application/json")
+                            .header("dapr-app-id", appId)
                             .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                             .build();
                     try {
